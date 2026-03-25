@@ -10,6 +10,9 @@ export default function DiffView() {
 
   function handleDiff() {
     if (!left.trim() || !right.trim()) return;
+    // Format both inputs before diffing so the user sees clean JSON
+    try { setLeft(JSON.stringify(JSON.parse(left), null, 2)); } catch { /* leave as-is, diffJson will report error */ }
+    try { setRight(JSON.stringify(JSON.parse(right), null, 2)); } catch { /* leave as-is */ }
     setResult(diffJson(left, right));
   }
 
