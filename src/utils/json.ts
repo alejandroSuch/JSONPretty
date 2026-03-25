@@ -1,4 +1,5 @@
 import yaml from 'js-yaml';
+import { diffLines } from 'diff';
 
 export interface JsonError {
   message: string;
@@ -122,4 +123,40 @@ export function diffJson(leftStr: string, rightStr: string): { entries: DiffEntr
   }
 
   return { entries };
+}
+
+export interface LineDiff {
+  type: 'added' | 'removed' | 'unchanged';
+  line: string;
+}
+
+export function diffJsonLines(leftStr: string, rightStr: string): { lines: LineDiff[]; added: number; removed: number; error?: string } {
+  let leftFormatted: string, rightFormatted: string;
+  try {
+    leftFormatted = JSON.stringify(JSON.parse(leftStr), null, 2);
+  } catch {
+    return { lines: [], added: 0, removed: 0, error: 'Left: invalid JSON' };
+  }
+  try {
+    rightFormatted = JSON.stringify(JSON.parse(rightStr), null, 2);
+  } catch {
+    return { lines: [], added: 0, removed: 0, error: 'Right: invalid JSON' };
+  }
+
+  const parts = diffLines(leftFormatted, rightFormatted);
+  const lines: LineDiff[] = [];
+  let added = 0;
+  let removed = 0;
+
+  for (const part of parts) {
+    const type = part.added ? 'added' : part.removed ? 'removed' : 'unchanged';
+    const partLines = part.value.replace(/\n$/, '').split('\n');
+    if (part.added) added += partLines.length;
+    if (part.removed) removed += partLines.length;
+    for (const line of partLines) {
+      lines.push({ type, line });
+    }
+  }
+
+  return { lines, added, removed };
 }

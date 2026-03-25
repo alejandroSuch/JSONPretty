@@ -26,5 +26,7 @@
   "removed": "Supprimé",
   "changed": "Modifié",
   "unchanged": "Inchangé",
-  "noDifferences": "Aucune différence trouvée"
+  "noDifferences": "Aucune différence trouvée",
+  "diffByKeys": "Par clés",
+  "diffByLines": "Par lignes"
 }

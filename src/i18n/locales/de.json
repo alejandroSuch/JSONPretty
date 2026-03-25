@@ -26,5 +26,7 @@
   "removed": "Entfernt",
   "changed": "Geändert",
   "unchanged": "Unverändert",
-  "noDifferences": "Keine Unterschiede gefunden"
+  "noDifferences": "Keine Unterschiede gefunden",
+  "diffByKeys": "Nach Schlüsseln",
+  "diffByLines": "Nach Zeilen"
 }

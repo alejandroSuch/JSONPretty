@@ -26,5 +26,7 @@
   "removed": "Odebráno",
   "changed": "Změněno",
   "unchanged": "Beze změny",
-  "noDifferences": "Nebyly nalezeny žádné rozdíly"
+  "noDifferences": "Nebyly nalezeny žádné rozdíly",
+  "diffByKeys": "Podle klíčů",
+  "diffByLines": "Podle řádků"
 }
