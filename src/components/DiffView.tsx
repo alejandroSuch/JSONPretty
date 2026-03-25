@@ -46,6 +46,7 @@ export default function DiffView() {
           value={left}
           onChange={(e) => setLeft(e.target.value)}
           placeholder={t('diffLeftPlaceholder')}
+          aria-label={t('diffLeftPlaceholder')}
           className="flex-1 min-h-[200px] p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-500"
           spellCheck={false}
         />
@@ -53,6 +54,7 @@ export default function DiffView() {
           value={right}
           onChange={(e) => setRight(e.target.value)}
           placeholder={t('diffRightPlaceholder')}
+          aria-label={t('diffRightPlaceholder')}
           className="flex-1 min-h-[200px] p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-500"
           spellCheck={false}
         />
@@ -61,6 +63,7 @@ export default function DiffView() {
       <div className="flex items-center justify-center gap-3">
         <button
           onClick={handleDiff}
+          aria-label={t('diff')}
           className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded font-medium transition-colors"
         >
           {t('diff')}
@@ -68,6 +71,7 @@ export default function DiffView() {
         <div className="flex rounded-md border border-gray-300 dark:border-gray-600 overflow-hidden text-xs">
           <button
             onClick={() => setMode('keys')}
+            aria-label={t('diffByKeys')}
             className={`px-3 py-1.5 transition-colors ${
               mode === 'keys'
                 ? 'bg-amber-500 text-white'
@@ -78,6 +82,7 @@ export default function DiffView() {
           </button>
           <button
             onClick={() => setMode('lines')}
+            aria-label={t('diffByLines')}
             className={`px-3 py-1.5 transition-colors ${
               mode === 'lines'
                 ? 'bg-amber-500 text-white'
@@ -103,7 +108,7 @@ export default function DiffView() {
           </div>
 
           {error ? (
-            <div className="p-3 text-red-600 dark:text-red-400 text-sm">{error}</div>
+            <div className="p-3 text-red-600 dark:text-red-400 text-sm">{t(error)}</div>
           ) : mode === 'keys' && keyResult ? (
             keyResult.entries.every((e) => e.type === 'unchanged') ? (
               <div className="p-3 text-gray-500 text-sm">{t('noDifferences')}</div>

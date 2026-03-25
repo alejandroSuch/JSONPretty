@@ -6,7 +6,8 @@ import Toolbar from './components/Toolbar';
 import Editor from './components/Editor';
 import DiffView from './components/DiffView';
 import Footer from './components/Footer';
-import { formatJson, validateJson, jsonToYaml, jsonToCsv } from './utils/json';
+import { formatJson, validateJson, jsonToYaml } from './utils/json';
+import { useBeforeUnload } from './hooks/useBeforeUnload';
 
 type Mode = 'editor' | 'diff';
 
@@ -18,6 +19,8 @@ export default function App() {
   const [error, setError] = useState('');
   const [mode, setMode] = useState<Mode>('editor');
   const [copied, setCopied] = useState(false);
+
+  useBeforeUnload(input.length > 0);
 
   function handleFormat() {
     const { output: o, error: e } = formatJson(input);
@@ -37,12 +40,6 @@ export default function App() {
     setError(e ? (e.line ? t('errorAtLine', { line: e.line, message: e.message }) : t('parseError', { message: e.message })) : '');
   }
 
-  function handleToCsv() {
-    const { output: o, error: e } = jsonToCsv(input);
-    setOutput(o);
-    setError(e === 'csvNotSupported' ? t('csvNotSupported') : e || '');
-  }
-
   function handleCopy() {
     navigator.clipboard.writeText(output);
     setCopied(true);
@@ -57,7 +54,6 @@ export default function App() {
         onFormat={handleFormat}
         onValidate={handleValidate}
         onToYaml={handleToYaml}
-        onToCsv={handleToCsv}
         onToggleDiff={() => setMode(mode === 'editor' ? 'diff' : 'editor')}
       />
       <main className="flex-1 p-4 max-w-7xl mx-auto w-full">

@@ -40,7 +40,7 @@ export default function Header({ dark, toggleDark }: Props) {
           <button
             onClick={toggleDark}
             className="p-2 rounded hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
-            aria-label="Toggle theme"
+            aria-label={t('toggleTheme')}
           >
             {dark ? '☀️' : '🌙'}
           </button>

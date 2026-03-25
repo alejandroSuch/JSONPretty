@@ -39,39 +39,6 @@ export function jsonToYaml(input: string): { output: string; error?: JsonError }
   return { output: yaml.dump(data, { indent: 2 }) };
 }
 
-export function jsonToCsv(input: string): { output: string; error?: string } {
-  const { data, error } = parseJson(input);
-  if (error) return { output: '', error: error.message };
-
-  if (!Array.isArray(data) || data.length === 0) {
-    return { output: '', error: 'csvNotSupported' };
-  }
-
-  const first = data[0];
-  if (typeof first !== 'object' || first === null || Array.isArray(first)) {
-    return { output: '', error: 'csvNotSupported' };
-  }
-
-  const headers = Object.keys(first);
-  const csvRows = [headers.join(',')];
-
-  for (const row of data) {
-    if (typeof row !== 'object' || row === null || Array.isArray(row)) {
-      return { output: '', error: 'csvNotSupported' };
-    }
-    const values = headers.map((h) => {
-      const val = (row as Record<string, unknown>)[h];
-      const str = val === null || val === undefined ? '' : String(val);
-      return str.includes(',') || str.includes('"') || str.includes('\n')
-        ? `"${str.replace(/"/g, '""')}"`
-        : str;
-    });
-    csvRows.push(values.join(','));
-  }
-
-  return { output: csvRows.join('\n') };
-}
-
 export interface DiffEntry {
   key: string;
   type: 'added' | 'removed' | 'changed' | 'unchanged';
@@ -84,12 +51,12 @@ export function diffJson(leftStr: string, rightStr: string): { entries: DiffEntr
   try {
     left = JSON.parse(leftStr);
   } catch {
-    return { entries: [], error: 'Left: invalid JSON' };
+    return { entries: [], error: 'diffErrorLeft' };
   }
   try {
     right = JSON.parse(rightStr);
   } catch {
-    return { entries: [], error: 'Right: invalid JSON' };
+    return { entries: [], error: 'diffErrorRight' };
   }
 
   if (typeof left !== 'object' || left === null || typeof right !== 'object' || right === null) {
@@ -135,12 +102,12 @@ export function diffJsonLines(leftStr: string, rightStr: string): { lines: LineD
   try {
     leftFormatted = JSON.stringify(JSON.parse(leftStr), null, 2);
   } catch {
-    return { lines: [], added: 0, removed: 0, error: 'Left: invalid JSON' };
+    return { lines: [], added: 0, removed: 0, error: 'diffErrorLeft' };
   }
   try {
     rightFormatted = JSON.stringify(JSON.parse(rightStr), null, 2);
   } catch {
-    return { lines: [], added: 0, removed: 0, error: 'Right: invalid JSON' };
+    return { lines: [], added: 0, removed: 0, error: 'diffErrorRight' };
   }
 
   const parts = diffLines(leftFormatted, rightFormatted);
