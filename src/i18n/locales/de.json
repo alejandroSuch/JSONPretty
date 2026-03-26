@@ -29,5 +29,7 @@
   "unchanged": "Unverändert",
   "noDifferences": "Keine Unterschiede gefunden",
   "diffByKeys": "Nach Schlüsseln",
-  "diffByLines": "Nach Zeilen"
+  "diffByLines": "Nach Zeilen",
+  "dropFileHere": "JSON-Datei hier ablegen",
+  "invalidFileType": "Nur .json-Dateien werden akzeptiert"
 }

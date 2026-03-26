@@ -29,5 +29,7 @@
   "unchanged": "Beze změny",
   "noDifferences": "Nebyly nalezeny žádné rozdíly",
   "diffByKeys": "Podle klíčů",
-  "diffByLines": "Podle řádků"
+  "diffByLines": "Podle řádků",
+  "dropFileHere": "Přetáhněte soubor JSON",
+  "invalidFileType": "Jsou přijímány pouze soubory .json"
 }

@@ -1,8 +1,75 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { diffJson, diffJsonLines } from '../utils/json';
+import { useFileDrop } from '../hooks/useFileDrop';
 
 type DiffMode = 'keys' | 'lines';
+
+function DiffTextarea({
+  value,
+  onChange,
+  placeholder,
+  ariaLabel,
+  borderColor,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  ariaLabel: string;
+  borderColor: 'indigo' | 'amber';
+}) {
+  const { t } = useTranslation();
+  const { isDragging, dropError, onDragOver, onDragLeave, onDrop } = useFileDrop(onChange);
+
+  const dragBorder = borderColor === 'indigo'
+    ? 'border-indigo-500 dark:border-indigo-400 border-2'
+    : 'border-amber-500 dark:border-amber-400 border-2';
+
+  const overlayBg = borderColor === 'indigo'
+    ? 'bg-indigo-500/10 dark:bg-indigo-400/10'
+    : 'bg-amber-500/10 dark:bg-amber-400/10';
+
+  const overlayText = borderColor === 'indigo'
+    ? 'text-indigo-600 dark:text-indigo-400'
+    : 'text-amber-600 dark:text-amber-400';
+
+  return (
+    <div className="flex-1 flex flex-col gap-1">
+      <div
+        className="relative flex-1"
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
+      >
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          aria-label={ariaLabel}
+          className={`flex-1 min-h-[200px] w-full h-full p-3 rounded-lg border bg-white dark:bg-gray-800 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+            isDragging ? dragBorder : 'border-gray-300 dark:border-gray-600'
+          }`}
+          spellCheck={false}
+        />
+        {isDragging && (
+          <div
+            className={`absolute inset-0 flex items-center justify-center rounded-lg ${overlayBg} pointer-events-none`}
+            aria-label={t('dropFileHere')}
+          >
+            <span className={`${overlayText} font-medium text-sm`}>
+              {t('dropFileHere')}
+            </span>
+          </div>
+        )}
+      </div>
+      {dropError && (
+        <div className="text-red-600 dark:text-red-400 text-xs bg-red-50 dark:bg-red-900/20 p-1.5 rounded">
+          {dropError}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function DiffView() {
   const { t } = useTranslation();
@@ -42,21 +109,19 @@ export default function DiffView() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col lg:flex-row gap-4">
-        <textarea
+        <DiffTextarea
           value={left}
-          onChange={(e) => setLeft(e.target.value)}
+          onChange={setLeft}
           placeholder={t('diffLeftPlaceholder')}
-          aria-label={t('diffLeftPlaceholder')}
-          className="flex-1 min-h-[200px] p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-500"
-          spellCheck={false}
+          ariaLabel={t('diffLeftPlaceholder')}
+          borderColor="indigo"
         />
-        <textarea
+        <DiffTextarea
           value={right}
-          onChange={(e) => setRight(e.target.value)}
+          onChange={setRight}
           placeholder={t('diffRightPlaceholder')}
-          aria-label={t('diffRightPlaceholder')}
-          className="flex-1 min-h-[200px] p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-500"
-          spellCheck={false}
+          ariaLabel={t('diffRightPlaceholder')}
+          borderColor="amber"
         />
       </div>
 
@@ -75,7 +140,7 @@ export default function DiffView() {
             className={`px-3 py-1.5 transition-colors ${
               mode === 'keys'
                 ? 'bg-amber-500 text-white'
-                : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
             }`}
           >
             {t('diffByKeys')}
@@ -86,7 +151,7 @@ export default function DiffView() {
             className={`px-3 py-1.5 transition-colors ${
               mode === 'lines'
                 ? 'bg-amber-500 text-white'
-                : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
             }`}
           >
             {t('diffByLines')}
@@ -96,7 +161,7 @@ export default function DiffView() {
 
       {hasResults && (
         <div className="rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
-          <div className="bg-gray-100 dark:bg-slate-700 px-3 py-2 text-sm font-medium flex items-center justify-between">
+          <div className="bg-gray-100 dark:bg-gray-700 px-3 py-2 text-sm font-medium flex items-center justify-between">
             <span>{t('diffResult')}</span>
             {mode === 'lines' && lineResult && !lineResult.error && (
               <span className="text-xs font-normal">

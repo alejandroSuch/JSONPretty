@@ -29,5 +29,7 @@
   "unchanged": "Invariato",
   "noDifferences": "Nessuna differenza trovata",
   "diffByKeys": "Per chiavi",
-  "diffByLines": "Per righe"
+  "diffByLines": "Per righe",
+  "dropFileHere": "Rilascia un file JSON",
+  "invalidFileType": "Sono accettati solo file .json"
 }
