@@ -70,7 +70,7 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen flex flex-col relative bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors"
+      className="h-screen flex flex-col relative bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors overflow-hidden"
       onDragOver={globalDragOver}
       onDragLeave={globalDragLeave}
       onDrop={globalDrop}
@@ -83,7 +83,7 @@ export default function App() {
         onToYaml={handleToYaml}
         onToggleDiff={() => setMode(mode === 'editor' ? 'diff' : 'editor')}
       />
-      <main className="flex-1 p-4 max-w-7xl mx-auto w-full">
+      <main className="flex-1 min-h-0 p-4 w-full overflow-auto">
         {mode === 'editor' ? (
           <Editor
             input={input}
